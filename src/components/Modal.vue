@@ -26,7 +26,7 @@
                             <div class="mt-2">
                                 <InputField title="Category" placeholder="Computer"></InputField>
                                 <InputField title="Product Name" placeholder="Computer"></InputField>
-                                <ListBox label="Warranty"></ListBox>
+                                <ListBox label="Warranty" @select="selectValue"></ListBox>
                                 <InputField title="Serial Number" placeholder="Computer"></InputField>
                                 <InputField title="Purchase Price" placeholder="Computer"></InputField>
                                 <InputField title="Purchase Date" placeholder="Computer"></InputField>
@@ -68,7 +68,7 @@ import {
 
 const isOpen = ref(true);
 const checkedNames = ref(false);
-const selected = ref('computer');
+let selected;
 
 function closeModal() {
     isOpen.value = false
@@ -76,4 +76,8 @@ function closeModal() {
 function openModal() {
     isOpen.value = true
 }
+
+const selectValue = (value) => {
+    selected = value;
+};
 </script>
