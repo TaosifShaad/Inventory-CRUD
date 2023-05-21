@@ -1,61 +1,61 @@
 <template>
-    <div class="whole">
-        <button @click="openModal">click</button>
-    <!-- <div class="fixed inset-0 flex items-center justify-center">
+    <div>
+        <!-- <button @click="openModal">click</button> -->
+        <!-- <div class="fixed inset-0 flex items-center justify-center">
         <button type="button" @click="openModal"
             class="rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
             Open dialog
         </button>
     </div> -->
-    <TransitionRoot appear :show="isOpen" as="template">
-        <Dialog as="div" @close="closeModal" class="relative z-10">
-            <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0" enter-to="opacity-100"
-                leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
-                <div class="fixed inset-0 bg-black bg-opacity-25" />
-            </TransitionChild>
+        <TransitionRoot appear :show="isOpen" as="template">
+            <Dialog as="div" @close="closeModal" class="relative z-10">
+                <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0" enter-to="opacity-100"
+                    leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
+                    <div class="fixed inset-0 bg-black bg-opacity-25" />
+                </TransitionChild>
 
-            <div class="fixed inset-0 overflow-y-auto">
-                <div class="flex min-h-full items-center justify-center p-4 text-center">
-                    <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0 scale-95"
-                        enter-to="opacity-100 scale-100" leave="duration-200 ease-in" leave-from="opacity-100 scale-100"
-                        leave-to="opacity-0 scale-95">
-                        <DialogPanel
-                            class="w-full max-w-[505px] pr-[30px] rounded-none transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                            <DialogTitle as="h3" class="text-lg font-medium leading-6 text-gray-900 text-center mb-7">
-                                Add New Product
-                            </DialogTitle>
-                            <div class="mt-2">
-                                <InputField title="Category" placeholder="Computer"></InputField>
-                                <InputField title="Product Name" placeholder="Computer"></InputField>
-                                <ListBox label="Warranty" @select="selectValue"></ListBox>
-                                <InputField title="Serial Number" placeholder="Computer"></InputField>
-                                <InputField title="Purchase Price" placeholder="Computer"></InputField>
-                                <InputField title="Purchase Date" placeholder="Computer"></InputField>
+                <div class="fixed inset-0 overflow-y-auto">
+                    <div class="flex min-h-full items-center justify-center p-4 text-center">
+                        <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0 scale-95"
+                            enter-to="opacity-100 scale-100" leave="duration-200 ease-in" leave-from="opacity-100 scale-100"
+                            leave-to="opacity-0 scale-95">
+                            <DialogPanel
+                                class="w-full max-w-[505px] pr-[30px] rounded-none transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                                <DialogTitle as="h3" class="text-lg font-medium leading-6 text-gray-900 text-center mb-7">
+                                    Add New Product
+                                </DialogTitle>
+                                <div class="mt-2">
+                                    <InputField title="Category" placeholder="Computer"></InputField>
+                                    <InputField title="Product Name" placeholder="Computer"></InputField>
+                                    <ListBox label="Warranty" @select="selectValue"></ListBox>
+                                    <InputField title="Serial Number" placeholder="Computer"></InputField>
+                                    <InputField title="Purchase Price" placeholder="Computer"></InputField>
+                                    <InputField title="Purchase Date" placeholder="Computer"></InputField>
 
-                                <div class="text-center">
-                                    <input class="mr-2" type="checkbox" id="jack" value="Jack" v-model="checkedNames">
-                                    <label for="jack">Has Warranty</label>
+                                    <div class="text-center">
+                                        <input class="mr-2" type="checkbox" id="jack" value="Jack" v-model="checkedNames">
+                                        <label for="jack">Has Warranty</label>
+                                    </div>
+
+                                    <div v-if="checkedNames">
+                                        <InputField title="Warranty"></InputField>
+                                        <InputField title="Warranty Expire Date"></InputField>
+                                    </div>
                                 </div>
 
-                                <div v-if="checkedNames">
-                                    <InputField title="Warranty"></InputField>
-                                    <InputField title="Warranty Expire Date"></InputField>
+                                <div class="mt-4 text-right">
+                                    <button type="button"
+                                        class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                                        @click="closeModal">
+                                        Save
+                                    </button>
                                 </div>
-                            </div>
-
-                            <div class="mt-4 text-right">
-                                <button type="button"
-                                    class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                                    @click="closeModal">
-                                    Save
-                                </button>
-                            </div>
-                        </DialogPanel>
-                    </TransitionChild>
+                            </DialogPanel>
+                        </TransitionChild>
+                    </div>
                 </div>
-            </div>
-        </Dialog>
-    </TransitionRoot>
+            </Dialog>
+        </TransitionRoot>
     </div>
 </template>
 
@@ -86,11 +86,3 @@ const selectValue = (value) => {
     selected = value;
 };
 </script>
-
-<style scoped>
-/* #headlessui-dialog-panel-5 {
-    max-width: 542px !important;
-    padding-right: 35px !important;
-    border-radius: 0px !important;
-} */
-</style>

@@ -6,16 +6,22 @@
                     <div class="overflow-hidden">
                         <table class="min-w-full text-left text-sm font-light">
                             <thead class="border-b font-medium dark:border-neutral-500">
-                                <tr class="bg-[#000000]">
-                                    <th scope="col" class="px-6 py-4">#</th>
-                                    <th scope="col" class="px-6 py-4">First</th>
-                                    <th scope="col" class="px-6 py-4">Last</th>
-                                    <th scope="col" class="px-6 py-4">Handle</th>
+                                <tr class="bg-[#CFD5DB]">
+                                    <th scope="col" class="px-6 py-4">SL</th>
+                                    <th scope="col" class="px-6 py-4">Asset No.</th>
+                                    <th scope="col" class="px-6 py-4">Category</th>
+                                    <th scope="col" class="px-6 py-4">Image</th>
+                                    <th scope="col" class="px-6 py-4">Product Name</th>
+                                    <th scope="col" class="px-6 py-4">Serial No.</th>
+                                    <th scope="col" class="px-6 py-4">Price</th>
+                                    <th scope="col" class="px-6 py-4">Warranty</th>
+                                    <th scope="col" class="px-6 py-4">Purchase Date</th>
+                                    <th scope="col" class="px-6 py-4">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr
-                                    class="border-b transition duration-300 ease-in-out hover:bg-neutral-100 dark:border-neutral-500 dark:hover:bg-neutral-600 bg-gray-500">
+                                    class="border-b transition duration-300 ease-in-out hover:bg-neutral-100 dark:border-neutral-500 dark:hover:bg-neutral-600 bg-[#FAFAFA]">
                                     <td class="whitespace-nowrap px-6 py-4 font-medium">1</td>
                                     <td class="whitespace-nowrap px-6 py-4">Mark</td>
                                     <td class="whitespace-nowrap px-6 py-4">Otto</td>
