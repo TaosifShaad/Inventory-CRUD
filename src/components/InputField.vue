@@ -1,7 +1,7 @@
 <template>
-    <div>
-        <label for="Category">{{ title }}</label>
-        <input type="text" id="Category" :placeholder="placeholder" class="border-2" />
+    <div class="text-right">
+        <label for="Category" class="mr-7">{{ title }}</label>
+        <input type="text" id="Category" :placeholder="placeholder" class="border-2 w-[250px] mb-3" />
     </div>
 </template>
 
