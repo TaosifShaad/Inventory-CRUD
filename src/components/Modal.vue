@@ -1,5 +1,6 @@
 <template>
-    <button @click="openModal">click</button>
+    <div class="whole">
+        <button @click="openModal">click</button>
     <!-- <div class="fixed inset-0 flex items-center justify-center">
         <button type="button" @click="openModal"
             class="rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
@@ -19,8 +20,8 @@
                         enter-to="opacity-100 scale-100" leave="duration-200 ease-in" leave-from="opacity-100 scale-100"
                         leave-to="opacity-0 scale-95">
                         <DialogPanel
-                            class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                            <DialogTitle as="h3" class="text-lg font-medium leading-6 text-gray-900">
+                            class="w-full max-w-[505px] pr-[30px] rounded-none transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                            <DialogTitle as="h3" class="text-lg font-medium leading-6 text-gray-900 text-center mb-7">
                                 Add New Product
                             </DialogTitle>
                             <div class="mt-2">
@@ -31,19 +32,22 @@
                                 <InputField title="Purchase Price" placeholder="Computer"></InputField>
                                 <InputField title="Purchase Date" placeholder="Computer"></InputField>
 
-                                <input type="checkbox" id="jack" value="Jack" v-model="checkedNames">
-                                <label for="jack">Has Warranty</label>
+                                <div class="text-center">
+                                    <input class="mr-2" type="checkbox" id="jack" value="Jack" v-model="checkedNames">
+                                    <label for="jack">Has Warranty</label>
+                                </div>
+
                                 <div v-if="checkedNames">
                                     <InputField title="Warranty"></InputField>
                                     <InputField title="Warranty Expire Date"></InputField>
                                 </div>
                             </div>
 
-                            <div class="mt-4">
+                            <div class="mt-4 text-right">
                                 <button type="button"
                                     class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                                     @click="closeModal">
-                                    Got it, thanks!
+                                    Save
                                 </button>
                             </div>
                         </DialogPanel>
@@ -52,6 +56,7 @@
             </div>
         </Dialog>
     </TransitionRoot>
+    </div>
 </template>
 
 <script setup>
@@ -81,3 +86,11 @@ const selectValue = (value) => {
     selected = value;
 };
 </script>
+
+<style scoped>
+/* #headlessui-dialog-panel-5 {
+    max-width: 542px !important;
+    padding-right: 35px !important;
+    border-radius: 0px !important;
+} */
+</style>
