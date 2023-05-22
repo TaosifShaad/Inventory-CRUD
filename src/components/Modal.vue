@@ -1,6 +1,6 @@
 <template>
     <div>
-        <!-- <button @click="openModal">click</button> -->
+        <button @click="openModal">click</button>
         <!-- <div class="fixed inset-0 flex items-center justify-center">
         <button type="button" @click="openModal"
             class="rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
@@ -25,9 +25,8 @@
                                     Add New Product
                                 </DialogTitle>
                                 <div class="mt-2">
-                                    <InputField title="Category" placeholder="Computer"></InputField>
-                                    <InputField title="Product Name" placeholder="Computer"></InputField>
-                                    <ListBox label="Warranty" @select="selectValue"></ListBox>
+                                    <ListBox label="Category" :options="categories" @select="selectCategory"></ListBox>
+                                    <ListBox label="Product Name" :options="selectedCategory? products: ['Select Category first']" @select="selectValue"></ListBox>
                                     <InputField title="Serial Number" placeholder="Computer"></InputField>
                                     <InputField title="Purchase Price" placeholder="Computer"></InputField>
                                     <InputField title="Purchase Date" placeholder="Computer"></InputField>
@@ -38,7 +37,7 @@
                                     </div>
 
                                     <div v-if="checkedNames">
-                                        <InputField title="Warranty"></InputField>
+                                        <ListBox label="Warranty" :options="state.options" @select="selectValue"></ListBox>
                                         <InputField title="Warranty Expire Date"></InputField>
                                     </div>
                                 </div>
@@ -60,9 +59,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, reactive, computed } from 'vue';
 import InputField from '@/components/InputField.vue';
 import ListBox from '@/components/ListBox.vue';
+import axios from 'axios';
 import {
     TransitionRoot,
     TransitionChild,
@@ -71,9 +71,51 @@ import {
     DialogTitle,
 } from '@headlessui/vue'
 
-const isOpen = ref(true);
+const isOpen = ref(false);
 const checkedNames = ref(false);
-let selected;
+const state = reactive({
+    options: [
+        'option a',
+        'option b'
+    ]
+});
+const categories = [];
+const productName = [];
+let selectedCategory = ref();
+let categoryResponse;
+
+const getCategory = async () => {
+    try {
+        const apiKey = 'IRyKCBuGQ1PpflCBs7ZaU+KImwTULz1fU8zjWE/aKhU='; // Replace with your actual API key
+        const url = 'http://182.163.101.173:49029/product-crud/products/category-name-wise-product-names'; // Replace with your API endpoint URL
+        const response = await axios.get(url, {
+            headers: {
+                'apiKey': apiKey
+            }
+        });
+        categoryResponse = response.data;
+        response.data.forEach(category => {
+            categories.push(category.name);
+            productName[category.name] = category.products;
+        });
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+getCategory();
+
+const products = computed(() => {
+    let productArr = [];
+    categoryResponse.forEach(element => {
+        if (element.name == selectedCategory.value) {
+            element.products.forEach(elem => {
+                productArr.push(elem.name);
+            })
+        }
+    })
+    return productArr;
+})
 
 function closeModal() {
     isOpen.value = false
@@ -84,5 +126,10 @@ function openModal() {
 
 const selectValue = (value) => {
     selected = value;
+};
+
+const selectCategory = (category) => {
+    selectedCategory.value = category;
+    console.log('lskdfj', productName[selectedCategory.value]);
 };
 </script>

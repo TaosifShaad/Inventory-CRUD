@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="max-w-[1450px] m-auto">
         <div class="flex flex-col">
             <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
@@ -21,25 +21,17 @@
                             </thead>
                             <tbody>
                                 <tr
-                                    class="border-b transition duration-300 ease-in-out hover:bg-neutral-100 dark:border-neutral-500 dark:hover:bg-neutral-600 bg-[#FAFAFA]">
-                                    <td class="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                    <td class="whitespace-nowrap px-6 py-4">Mark</td>
-                                    <td class="whitespace-nowrap px-6 py-4">Otto</td>
-                                    <td class="whitespace-nowrap px-6 py-4">@mdo</td>
-                                </tr>
-                                <tr
-                                    class="border-b transition duration-300 ease-in-out hover:bg-neutral-100 dark:border-neutral-500 dark:hover:bg-neutral-600 bg-gray-500">
-                                    <td class="whitespace-nowrap px-6 py-4 font-medium">2</td>
-                                    <td class="whitespace-nowrap px-6 py-4">Jacob</td>
-                                    <td class="whitespace-nowrap px-6 py-4">Thornton</td>
-                                    <td class="whitespace-nowrap px-6 py-4">@fat</td>
-                                </tr>
-                                <tr
-                                    class="border-b transition duration-300 ease-in-out hover:bg-neutral-100 dark:border-neutral-500 dark:hover:bg-neutral-600">
-                                    <td class="whitespace-nowrap px-6 py-4 font-medium">3</td>
-                                    <td class="whitespace-nowrap px-6 py-4">Larry</td>
-                                    <td class="whitespace-nowrap px-6 py-4">Wild</td>
-                                    <td class="whitespace-nowrap px-6 py-4">@twitter</td>
+                                    v-for="product in products" :key="product.id" class="transition duration-300 ease-in-out hover:bg-neutral-100 dark:border-neutral-500 dark:hover:bg-neutral-600 bg-[#FAFAFA]">
+                                    <td class="whitespace-nowrap px-6 py-4 font-medium">{{ product.serialNumber }}</td>
+                                    <td class="whitespace-nowrap px-6 py-4">{{ product.assetNumber }}</td>
+                                    <td class="whitespace-nowrap px-6 py-4">{{ product.categoryName }}</td>
+                                    <td class="whitespace-nowrap px-6 py-4">N/A</td>
+                                    <td class="whitespace-nowrap px-6 py-4">{{ product.productName }}</td>
+                                    <td class="whitespace-nowrap px-6 py-4">{{ product.serialNumber }}</td>
+                                    <td class="whitespace-nowrap px-6 py-4">{{ product.purchasePrice }}</td>
+                                    <td class="whitespace-nowrap px-6 py-4">{{ product.warrantyInYears }}</td>
+                                    <td class="whitespace-nowrap px-6 py-4">{{ product.purchaseDate }}</td>
+                                    <td class="whitespace-nowrap px-6 py-4">{{ product.warrantyInYears }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -51,6 +43,27 @@
 </template>
 
 <script setup>
+import axios from 'axios';
+import { ref } from 'vue';
+
+const products = ref();
+
+const makeApiCall = async () => {
+    try {
+        const apiKey = 'IRyKCBuGQ1PpflCBs7ZaU+KImwTULz1fU8zjWE/aKhU='; // Replace with your actual API key
+        const url = 'http://182.163.101.173:49029/product-crud/products'; // Replace with your API endpoint URL
+        const response = await axios.get(url, {
+            headers: {
+                'apiKey': apiKey
+            }
+        });
+        products.value = response.data;
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+makeApiCall();
 </script>
 
 <style scoped>
