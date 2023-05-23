@@ -1,41 +1,39 @@
 <template>
   <Navbar />
-  <!-- <header>
-    <div class="wrapper">
-      <nav>
-        <RouterLink to="/add">Add</RouterLink>
-      </nav>
-      <AddValue />
-    </div>
-  </header> -->
-  <Table @editData="sendToModal" />
-  <Modal :rowData="rowData" :isOpen="isOpen" @closeModal="closeModal"></Modal>
-  <button @click="openModal">clvvick</button>
-  <!-- <RouterView /> -->
+  <button class="bg-[#045692] text-white p-3 ml-9 mt-5" @click="openModal">Add Inventory</button>
+  <Table :reFetchData="fetchData" @editData="sendToModal"></Table>
+  <Modal :rowData="rowData" :mode="modalMode" :isOpen="isOpen" @closeModal="closeModal" @openModal="openModal"
+    @reFetchData="reFetchData"></Modal>
 </template>
 
 <script setup>
 import { reactive, ref } from 'vue';
-import { RouterLink, RouterView } from 'vue-router';
 import { provide } from 'vue';
-import AddValue from '@/views/AddValue.vue';
 import Table from '@/components/Table.vue';
 import Modal from '@/components/Modal.vue';
 import Navbar from '@/components/Navbar.vue';
 
 const rowData = ref();
 const isOpen = ref(false);
+const modalMode = ref();
+const fetchData = ref(false);
 
 function openModal() {
-    isOpen.value = true;
+  isOpen.value = true;
 }
 
 function closeModal() {
-    isOpen.value = false
+  isOpen.value = false
 }
 
 const sendToModal = (data) => {
+  modalMode.value = 'edit';
   rowData.value = data;
+  openModal();
+};
+
+const reFetchData = () => {
+  fetchData.value = true;
 };
 
 let test = ref(false);
@@ -43,6 +41,4 @@ provide('test', test.value);
 
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

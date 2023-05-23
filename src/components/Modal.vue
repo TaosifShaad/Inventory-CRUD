@@ -1,12 +1,5 @@
 <template>
     <div>
-        <!-- <button @click="openModal">click</button> -->
-        <!-- <div class="fixed inset-0 flex items-center justify-center">
-        <button type="button" @click="openModal"
-            class="rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
-            Open dialog
-        </button>
-    </div> -->
         <TransitionRoot appear :show="isOpen" as="template">
             <Dialog as="div" class="relative z-10">
                 <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0" enter-to="opacity-100"
@@ -20,16 +13,16 @@
                             enter-to="opacity-100 scale-100" leave="duration-200 ease-in" leave-from="opacity-100 scale-100"
                             leave-to="opacity-0 scale-95">
                             <DialogPanel
-                                class="w-full max-w-[505px] pr-[30px] rounded-none transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                                <DialogTitle as="h3" class="text-lg font-medium leading-6 text-gray-900 text-center mb-7">
-                                    Add New Product
+                                class="w-full max-w-[505px] pr-[30px] rounded-none transform overflow-hidden rounded-2xl bg-[#F7F7FA] p-6 text-left align-middle shadow-xl transition-all">
+                                <DialogTitle as="h3" class="text-lg font-medium leading-6 text-gray-900 text-center mb-7 ml-10">
+                                    {{ mode == 'edit' ? 'Edit Product' : 'Add New Product' }} <button class="float-right" @click="closeModal"><XMarkIcon class="h-6 w-6 text-gray-500" /></button>
                                 </DialogTitle>
                                 <div class="mt-2">
                                     <ListBox label="Category" :options="categories" @select="selectCategory"></ListBox>
                                     <ListBox label="Product Name" :options="products" @select="selectProductName"></ListBox>
-                                    <InputField title="Serial Number" placeholder="Computer" @select="selectSl">
+                                    <InputField title="Serial Number" placeholder="Enter Serial Number" @select="selectSl">
                                     </InputField>
-                                    <InputField title="Purchase Price" placeholder="Computer" @select="selectPrice">
+                                    <InputField title="Purchase Price" placeholder="Enter Price" @select="selectPrice">
                                     </InputField>
                                     <InputField title="Purchase Date" inputType="date" @select="selectPurchaseDate">
                                     </InputField>
@@ -48,11 +41,12 @@
                                 </div>
 
                                 <div class="mt-4 text-right">
+                                    <button class="mr-2 py-[5px] px-4 border-2 border-red-500 rounded-sm text-red-500 font-medium" @click="closeModal">Cancel</button>
                                     <button type="button"
-                                        class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                                        class="inline-flex justify-center rounded-sm border border-transparent bg-blue-500 px-6 py-2 text-sm font-medium text-white hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                                         @click="addData">
                                         Save
-                                    </button><button @click="closeModal">xxx</button>
+                                    </button>
                                 </div>
                             </DialogPanel>
                         </TransitionChild>
@@ -68,6 +62,8 @@ import { ref, reactive, computed, onUpdated } from 'vue';
 import InputField from '@/components/InputField.vue';
 import ListBox from '@/components/ListBox.vue';
 import axios from 'axios';
+import Swal from 'sweetalert2';
+import { XMarkIcon } from "@heroicons/vue/24/outline";
 import {
     TransitionRoot,
     TransitionChild,
@@ -78,10 +74,24 @@ import {
 
 const props = defineProps({
     rowData: Object,
-    isOpen: Boolean
+    isOpen: Boolean,
+    mode: String
 });
 
-const emit = defineEmits(['closeModal']);
+const emit = defineEmits(['closeModal', 'openModal', 'reFetchData']);
+
+onUpdated(() => {
+    if (props.mode == 'edit') {
+        product.categoryName = props.rowData.categoryName;
+        product.productName = props.rowData.productName;
+        product.serialNumber = props.rowData.serialNumber;
+        product.purchasePrice = props.rowData.purchasePrice;
+        product.purchaseDate = props.rowData.purchaseDate;
+        product.warrantyInYears = props.rowData.warrantyInYears;
+        product.warrantyExpireDate = props.rowData.warrantyExpireDate;
+        console.log(props.rowData.serialNumber, 'pppp');
+    }
+});
 
 const checkedNames = ref(false);
 const state = reactive({
@@ -139,6 +149,23 @@ const postData = async () => {
                 'Accept': '*/*'
             }
         });
+        emit('reFetchData');
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        })
+
+        Toast.fire({
+            icon: 'success',
+            title: 'Product Added'
+        })
     } catch (error) {
         console.log(error);
     }

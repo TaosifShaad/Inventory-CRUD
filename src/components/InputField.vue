@@ -1,7 +1,7 @@
 <template>
     <div class="text-right">
         <label for="Category" class="mr-7">{{ title }}</label>
-        <input :type="inputType" id="Category" :placeholder="placeholder" class="border-2 w-[250px] mb-3" v-model="selected" @input="emitValue" />
+        <input required :type="inputType" id="Category" :placeholder="placeholder" class="px-2 border-2 w-[250px] mb-3" v-model="selected" @input="emitValue" />
     </div>
 </template>
 
