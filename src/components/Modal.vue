@@ -26,26 +26,31 @@
                                 </DialogTitle>
                                 <div class="mt-2">
                                     <ListBox label="Category" :options="categories" @select="selectCategory"></ListBox>
-                                    <ListBox label="Product Name" :options="selectedCategory? products: ['Select Category first']" @select="selectValue"></ListBox>
-                                    <InputField title="Serial Number" placeholder="Computer"></InputField>
-                                    <InputField title="Purchase Price" placeholder="Computer"></InputField>
-                                    <InputField title="Purchase Date" placeholder="Computer"></InputField>
+                                    <ListBox label="Product Name" :options="products" @select="selectProductName"></ListBox>
+                                    <InputField title="Serial Number" placeholder="Computer" @select="selectSl">
+                                    </InputField>
+                                    <InputField title="Purchase Price" placeholder="Computer" @select="selectPrice">
+                                    </InputField>
+                                    <InputField title="Purchase Date" inputType="date" @select="selectPurchaseDate">
+                                    </InputField>
 
                                     <div class="text-center">
                                         <input class="mr-2" type="checkbox" id="jack" value="Jack" v-model="checkedNames">
                                         <label for="jack">Has Warranty</label>
                                     </div>
 
-                                    <div v-if="checkedNames">
-                                        <ListBox label="Warranty" :options="state.options" @select="selectValue"></ListBox>
-                                        <InputField title="Warranty Expire Date"></InputField>
+                                    <div v-if="checkedNames" class="mt-2">
+                                        <ListBox label="Warranty" :options="state.options" @select="selectWarranty">
+                                        </ListBox>
+                                        <InputField title="Warranty Expire Date" inputType="date"
+                                            @select="selectExpireDate"></InputField>
                                     </div>
                                 </div>
 
                                 <div class="mt-4 text-right">
                                     <button type="button"
                                         class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                                        @click="closeModal">
+                                        @click="addData">
                                         Save
                                     </button>
                                 </div>
@@ -69,25 +74,34 @@ import {
     Dialog,
     DialogPanel,
     DialogTitle,
-} from '@headlessui/vue'
+} from '@headlessui/vue';
 
 const isOpen = ref(false);
 const checkedNames = ref(false);
 const state = reactive({
     options: [
-        'option a',
-        'option b'
+        1,
+        2
     ]
 });
 const categories = [];
 const productName = [];
-let selectedCategory = ref();
 let categoryResponse;
+
+const product = reactive({
+    categoryName: '',
+    productName: '',
+    serialNumber: '',
+    purchasePrice: '',
+    purchaseDate: '',
+    warrantyInYears: '',
+    warrantyExpireDate: ''
+});
 
 const getCategory = async () => {
     try {
-        const apiKey = 'IRyKCBuGQ1PpflCBs7ZaU+KImwTULz1fU8zjWE/aKhU='; // Replace with your actual API key
-        const url = 'http://182.163.101.173:49029/product-crud/products/category-name-wise-product-names'; // Replace with your API endpoint URL
+        const apiKey = 'IRyKCBuGQ1PpflCBs7ZaU+KImwTULz1fU8zjWE/aKhU=';
+        const url = 'http://182.163.101.173:49029/product-crud/products/category-name-wise-product-names';
         const response = await axios.get(url, {
             headers: {
                 'apiKey': apiKey
@@ -105,10 +119,29 @@ const getCategory = async () => {
 
 getCategory();
 
+const postData = async () => {
+    const jsonBlob = new Blob([JSON.stringify(product)], { type: 'application/json' });
+    const formData = new FormData();
+    formData.append('product', jsonBlob, 'product.json');
+    try {
+        const apiKey = 'IRyKCBuGQ1PpflCBs7ZaU+KImwTULz1fU8zjWE/aKhU=';
+        const url = 'http://182.163.101.173:49029/product-crud/products';
+        const response = await axios.post(url, formData, {
+            headers: {
+                'apiKey': apiKey,
+                'Content-Type': 'multipart/form-data',
+                'Accept': '*/*'
+            }
+        });
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 const products = computed(() => {
     let productArr = [];
     categoryResponse.forEach(element => {
-        if (element.name == selectedCategory.value) {
+        if (element.name == product.categoryName) {
             element.products.forEach(elem => {
                 productArr.push(elem.name);
             })
@@ -124,12 +157,36 @@ function openModal() {
     isOpen.value = true
 }
 
-const selectValue = (value) => {
-    selected = value;
+const selectWarranty = (warranty) => {
+    product.warrantyInYears = warranty;
 };
 
 const selectCategory = (category) => {
-    selectedCategory.value = category;
-    console.log('lskdfj', productName[selectedCategory.value]);
+    product.categoryName = category;
+};
+
+const selectProductName = (selectedProduct) => {
+    product.productName = selectedProduct;
+}
+
+const selectSl = (sl) => {
+    product.serialNumber = sl;
+}
+
+const selectPrice = (price) => {
+    product.purchasePrice = price;
+};
+
+const selectPurchaseDate = (date) => {
+    product.purchaseDate = date;
+};
+
+const selectExpireDate = (date) => {
+    product.warrantyExpireDate = date;
+};
+
+const addData = () => {
+    closeModal();
+    postData();
 };
 </script>
