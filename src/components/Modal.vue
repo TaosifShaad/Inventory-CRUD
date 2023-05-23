@@ -1,6 +1,6 @@
 <template>
     <div>
-        <button @click="openModal">click</button>
+        <!-- <button @click="openModal">click</button> -->
         <!-- <div class="fixed inset-0 flex items-center justify-center">
         <button type="button" @click="openModal"
             class="rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
@@ -8,7 +8,7 @@
         </button>
     </div> -->
         <TransitionRoot appear :show="isOpen" as="template">
-            <Dialog as="div" @close="closeModal" class="relative z-10">
+            <Dialog as="div" class="relative z-10">
                 <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0" enter-to="opacity-100"
                     leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
                     <div class="fixed inset-0 bg-black bg-opacity-25" />
@@ -52,7 +52,7 @@
                                         class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                                         @click="addData">
                                         Save
-                                    </button>
+                                    </button><button @click="closeModal">xxx</button>
                                 </div>
                             </DialogPanel>
                         </TransitionChild>
@@ -64,7 +64,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed } from 'vue';
+import { ref, reactive, computed, onUpdated } from 'vue';
 import InputField from '@/components/InputField.vue';
 import ListBox from '@/components/ListBox.vue';
 import axios from 'axios';
@@ -76,7 +76,13 @@ import {
     DialogTitle,
 } from '@headlessui/vue';
 
-const isOpen = ref(false);
+const props = defineProps({
+    rowData: Object,
+    isOpen: Boolean
+});
+
+const emit = defineEmits(['closeModal']);
+
 const checkedNames = ref(false);
 const state = reactive({
     options: [
@@ -151,7 +157,7 @@ const products = computed(() => {
 })
 
 function closeModal() {
-    isOpen.value = false
+    emit('closeModal');
 }
 function openModal() {
     isOpen.value = true

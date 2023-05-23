@@ -33,8 +33,8 @@
                                     <td class="whitespace-nowrap px-6 py-4">{{ product.purchaseDate }}</td>
                                     <td class="whitespace-nowrap px-6 py-4">
                                         <div class="flex gap-2">
-                                            <PencilSquareIcon class="h-6 w-6 text-blue-500" />
-                                            <TrashIcon class="h-6 w-6 text-red-500" />
+                                            <PencilSquareIcon class="h-6 w-6 text-blue-500" @click="getRowData(product)"/>
+                                            <TrashIcon class="h-6 w-6 text-red-500" @click="deleteData(product.id)"/>
                                         </div>
                                     </td>
                                 </tr>
@@ -52,12 +52,14 @@ import axios from 'axios';
 import { ref } from 'vue';
 import { PencilSquareIcon, TrashIcon } from "@heroicons/vue/24/outline";
 
+const emit = defineEmits(['editData']);
+
 const products = ref();
 
-const makeApiCall = async () => {
+const getTableData = async () => {
     try {
-        const apiKey = 'IRyKCBuGQ1PpflCBs7ZaU+KImwTULz1fU8zjWE/aKhU='; // Replace with your actual API key
-        const url = 'http://182.163.101.173:49029/product-crud/products'; // Replace with your API endpoint URL
+        const apiKey = 'IRyKCBuGQ1PpflCBs7ZaU+KImwTULz1fU8zjWE/aKhU=';
+        const url = 'http://182.163.101.173:49029/product-crud/products';
         const response = await axios.get(url, {
             headers: {
                 'apiKey': apiKey
@@ -69,7 +71,28 @@ const makeApiCall = async () => {
     }
 };
 
-makeApiCall();
+getTableData();
+
+const deleteData = async (id) => {
+    try {
+        const apiKey = 'IRyKCBuGQ1PpflCBs7ZaU+KImwTULz1fU8zjWE/aKhU=';
+        const url = `http://182.163.101.173:49029/product-crud/products/${id}`;
+        const response = await axios.delete(url, {
+            headers: {
+                'apiKey': apiKey
+            }
+        });
+        getTableData();
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+const getRowData = (rowData) => {
+    console.log(rowData.id);
+    emit('editData', rowData);
+}
+
 </script>
 
 <style scoped>
