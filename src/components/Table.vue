@@ -29,12 +29,16 @@
                                     <td class="whitespace-nowrap px-6 py-4">{{ product.productName }}</td>
                                     <td class="whitespace-nowrap px-6 py-4">{{ product.serialNumber }}</td>
                                     <td class="whitespace-nowrap px-6 py-4">{{ product.purchasePrice }}</td>
-                                    <td class="whitespace-nowrap px-6 py-4">{{ product.warrantyInYears ? product.warrantyInYears : 'N/A' }}</td>
+                                    <td class="whitespace-nowrap px-6 py-4">{{ product.warrantyInYears ?
+                                        product.warrantyInYears : 'N/A' }}</td>
                                     <td class="whitespace-nowrap px-6 py-4">{{ product.purchaseDate }}</td>
                                     <td class="whitespace-nowrap px-6 py-4">
                                         <div class="flex gap-2">
-                                            <PencilSquareIcon class="h-6 w-6 text-blue-500 cursor-pointer hover:text-blue-700" @click="getRowData(product)" />
-                                            <TrashIcon class="h-6 w-6 text-red-500 cursor-pointer hover:text-red-700" @click="deleteData(product.id)" />
+                                            <PencilSquareIcon
+                                                class="h-6 w-6 text-blue-500 cursor-pointer hover:text-blue-700"
+                                                @click="getRowData(product)" />
+                                            <TrashIcon class="h-6 w-6 text-red-500 cursor-pointer hover:text-red-700"
+                                                @click="deleteData(product.id)" />
                                         </div>
                                     </td>
                                 </tr>
@@ -49,7 +53,7 @@
 
 <script setup>
 import axios from 'axios';
-import { onUpdated, ref } from 'vue';
+import { onUpdated, ref, watch } from 'vue';
 import Swal from 'sweetalert2';
 import { PencilSquareIcon, TrashIcon } from "@heroicons/vue/24/outline";
 
@@ -59,11 +63,15 @@ const props = defineProps({
 
 const emit = defineEmits(['editData']);
 
-console.log(props.reFetchData);
-
-onUpdated(() => {
-    if (props.reFetchData) {
-        getTableData();
+const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer)
+        toast.addEventListener('mouseleave', Swal.resumeTimer)
     }
 });
 
@@ -78,9 +86,18 @@ const getTableData = async () => {
                 'apiKey': apiKey
             }
         });
+        if (response.status != 200) {
+            Toast.fire({
+                icon: 'error',
+                title: 'Error: status: ' + response.status 
+            });
+        }
         products.value = response.data;
     } catch (error) {
-        console.error(error);
+        Toast.fire({
+            icon: 'error',
+            title: error.message
+        });
     }
 };
 
@@ -94,7 +111,7 @@ const deleteData = async (id) => {
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
         confirmButtonText: 'Yes, delete it!'
-    }).then( async (result) => {
+    }).then(async (result) => {
         if (result.isConfirmed) {
             try {
                 const apiKey = 'IRyKCBuGQ1PpflCBs7ZaU+KImwTULz1fU8zjWE/aKhU=';
@@ -106,16 +123,22 @@ const deleteData = async (id) => {
                 });
                 getTableData();
             } catch (error) {
-                console.error(error);
+                Toast.fire({
+                    icon: 'error',
+                    title: error.message
+                });
             }
         }
     })
 };
 
 const getRowData = (rowData) => {
-    console.log(rowData);
     emit('editData', rowData);
 }
+
+watch(() => props.reFetchData, () => {
+    getTableData();
+});
 
 </script>
 
@@ -123,5 +146,4 @@ const getRowData = (rowData) => {
 table {
     border-collapse: separate;
     border-spacing: 0 15px;
-}
-</style>
+}</style>

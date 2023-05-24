@@ -23,43 +23,38 @@
                                 </DialogTitle>
                                 <form @submit.prevent="addData(productId)">
                                     <div class="mt-2">
-                                        <!-- <ListBox label="Category" :options="categories" @select="selectCategory"> -->
                                         <div class="text-right">
                                             <label for="category" class="mr-7">Category</label>
-                                            <select id="category" v-model="product.categoryName" class="border-2 w-[250px] mb-3">
+                                            <select id="category" v-model="product.categoryName"
+                                                class="border-2 w-[250px] mb-3">
                                                 <option v-for="option in categories" :key="option">{{ option }}</option>
                                             </select>
                                         </div>
-                                        <!-- </ListBox> -->
-                                        <!-- <ListBox label="Product Name" :options="products" @select="selectProductName"> -->
                                         <div class="text-right">
                                             <label for="product-name" class="mr-7">Product Name</label>
-                                            <select id="product-name" v-model="product.productName" class="border-2 w-[250px] mb-3">
+                                            <select id="product-name" v-model="product.productName"
+                                                class="border-2 w-[250px] mb-3">
                                                 <option v-for="option in products" :key="option">{{ option }}</option>
                                             </select>
                                         </div>
-                                        <!-- </ListBox> -->
-                                        <!-- <InputField title="Serial Number" placeholder="Enter Serial Number" @select="selectSl"> -->
+
                                         <div class="text-right">
                                             <label for="serial" class="mr-7">Serial Number</label>
                                             <input required type="text" id="serial" placeholder="Enter Serial Number"
                                                 class="px-2 border-2 w-[250px] mb-3" v-model="product.serialNumber" />
                                         </div>
-                                        <!-- </InputField> -->
-                                        <!-- <InputField title="Purchase Price" placeholder="Enter Price" @select="selectPrice"> -->
+
                                         <div class="text-right">
                                             <label for="price" class="mr-7">Purchase Price</label>
                                             <input required type="text" id="price" placeholder="Enter price"
                                                 class="px-2 border-2 w-[250px] mb-3" v-model="product.purchasePrice" />
                                         </div>
-                                        <!-- </InputField> -->
-                                        <!-- <InputField title="Purchase Date" inputType="date" @select="selectPurchaseDate"> -->
+
                                         <div class="text-right">
                                             <label for="purchase-date" class="mr-7">Purchase Date</label>
                                             <input required type="date" id="purchase-date"
                                                 class="px-2 border-2 w-[250px] mb-3" v-model="product.purchaseDate" />
                                         </div>
-                                        <!-- </InputField> -->
 
                                         <div class="text-center">
                                             <input class="mr-2" type="checkbox" id="warranty-check"
@@ -68,16 +63,14 @@
                                         </div>
 
                                         <div v-if="checkedWarranty" class="mt-2">
-                                            <!-- <ListBox label="Warranty" :options="state.options" @select="selectWarranty"> -->
-                                                <div class="text-right">
-                                            <label for="warranty" class="mr-7">Warranty</label>
-                                            <select id="warranty" v-model="product.warrantyInYears" class="border-2 w-[250px] mb-3">
-                                                <option v-for="option in state.options" :key="option">{{ option }}</option>
-                                            </select>
-                                        </div>
-                                            <!-- </ListBox> -->
-                                            <!-- <InputField title="Warranty Expire Date" inputType="date"
-                                            @select="selectExpireDate"></InputField> -->
+                                            <div class="text-right">
+                                                <label for="warranty" class="mr-7">Warranty</label>
+                                                <select id="warranty" v-model="product.warrantyInYears"
+                                                    class="border-2 w-[250px] mb-3">
+                                                    <option v-for="option in state.options" :key="option">{{ option }}
+                                                    </option>
+                                                </select>
+                                            </div>
                                             <div class="text-right">
                                                 <label for="expire-date" class="mr-7">Warranty Expire Date</label>
                                                 <input required type="date" id="expire-date"
@@ -107,8 +100,6 @@
 
 <script setup>
 import { ref, reactive, computed, onUpdated, onMounted } from 'vue';
-import InputField from '@/components/InputField.vue';
-import ListBox from '@/components/ListBox.vue';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { XMarkIcon } from "@heroicons/vue/24/outline";
@@ -127,6 +118,18 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['closeModal', 'openModal', 'reFetchData']);
+
+const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer)
+        toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
+});
 
 onUpdated(() => {
     if (props.mode == 'edit') {
@@ -195,7 +198,10 @@ const getCategory = async () => {
             productName[category.name] = category.products;
         });
     } catch (error) {
-        console.error(error);
+        Toast.fire({
+            icon: 'error',
+            title: error.message
+        });
     }
 };
 
@@ -218,31 +224,19 @@ const postData = async () => {
             }
         });
         emit('reFetchData');
-        const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-                toast.addEventListener('mouseenter', Swal.stopTimer)
-                toast.addEventListener('mouseleave', Swal.resumeTimer)
-            }
-        })
-
         Toast.fire({
             icon: 'success',
             title: 'Product Added'
         })
     } catch (error) {
-        console.log(error);
+        Toast.fire({
+            icon: 'error',
+            title: error.message
+        })
     }
 };
 
 const updateData = async (id) => {
-    console.log(id, 'id');
-    console.log(product, 'product');
-    console.log(productId.value, 'id 2');
     try {
         const apiKey = 'IRyKCBuGQ1PpflCBs7ZaU+KImwTULz1fU8zjWE/aKhU=';
         const url = `http://182.163.101.173:49029/product-crud/products/${id}`;
@@ -254,24 +248,16 @@ const updateData = async (id) => {
             }
         });
         emit('reFetchData');
-        const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-                toast.addEventListener('mouseenter', Swal.stopTimer)
-                toast.addEventListener('mouseleave', Swal.resumeTimer)
-            }
-        })
 
         Toast.fire({
             icon: 'success',
             title: 'Product Updated'
         })
     } catch (error) {
-        console.log(error);
+        Toast.fire({
+            icon: 'error',
+            title: error.message
+        });
     }
 };
 
@@ -289,6 +275,7 @@ const products = computed(() => {
 
 const clearWarranty = () => {
     if (!checkedWarranty.value) {
+        console.log('uncheck')
         product.warrantyInYears = '';
         product.warrantyExpireDate = '';
     }

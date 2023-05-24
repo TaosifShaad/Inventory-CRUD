@@ -37,7 +37,7 @@ const sendToModal = (data) => {
 };
 
 const reFetchData = () => {
-  fetchData.value = true;
+  fetchData.value = !fetchData.value;
 };
 
 let test = ref(false);
