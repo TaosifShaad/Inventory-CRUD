@@ -14,40 +14,69 @@
                             leave-to="opacity-0 scale-95">
                             <DialogPanel
                                 class="w-full max-w-[505px] pr-[30px] rounded-none transform overflow-hidden rounded-2xl bg-[#F7F7FA] p-6 text-left align-middle shadow-xl transition-all">
-                                <DialogTitle as="h3" class="text-lg font-medium leading-6 text-gray-900 text-center mb-7 ml-10">
-                                    {{ mode == 'edit' ? 'Edit Product' : 'Add New Product' }} <button class="float-right" @click="closeModal"><XMarkIcon class="h-6 w-6 text-gray-500" /></button>
-                                </DialogTitle>
-                                <div class="mt-2">
-                                    <ListBox label="Category" :options="categories" @select="selectCategory"></ListBox>
-                                    <ListBox label="Product Name" :options="products" @select="selectProductName"></ListBox>
-                                    <InputField title="Serial Number" placeholder="Enter Serial Number" @select="selectSl">
-                                    </InputField>
-                                    <InputField title="Purchase Price" placeholder="Enter Price" @select="selectPrice">
-                                    </InputField>
-                                    <InputField title="Purchase Date" inputType="date" @select="selectPurchaseDate">
-                                    </InputField>
-
-                                    <div class="text-center">
-                                        <input class="mr-2" type="checkbox" id="jack" value="Jack" v-model="checkedNames">
-                                        <label for="jack">Has Warranty</label>
-                                    </div>
-
-                                    <div v-if="checkedNames" class="mt-2">
-                                        <ListBox label="Warranty" :options="state.options" @select="selectWarranty">
-                                        </ListBox>
-                                        <InputField title="Warranty Expire Date" inputType="date"
-                                            @select="selectExpireDate"></InputField>
-                                    </div>
-                                </div>
-
-                                <div class="mt-4 text-right">
-                                    <button class="mr-2 py-[5px] px-4 border-2 border-red-500 rounded-sm text-red-500 font-medium" @click="closeModal">Cancel</button>
-                                    <button type="button"
-                                        class="inline-flex justify-center rounded-sm border border-transparent bg-blue-500 px-6 py-2 text-sm font-medium text-white hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                                        @click="addData">
-                                        Save
+                                <DialogTitle as="h3"
+                                    class="text-lg font-medium leading-6 text-gray-900 text-center mb-7 ml-10">
+                                    {{ mode == 'edit' ? 'Edit Product' : 'Add New Product' }} <button class="float-right"
+                                        @click="closeModal">
+                                        <XMarkIcon class="h-6 w-6 text-gray-500" />
                                     </button>
-                                </div>
+                                </DialogTitle>
+                                <form @submit.prevent="addData(productId)">
+                                    <div class="mt-2">
+                                        <ListBox label="Category" :options="categories" @select="selectCategory"></ListBox>
+                                        <ListBox label="Product Name" :options="products" @select="selectProductName">
+                                        </ListBox>
+                                        <!-- <InputField title="Serial Number" placeholder="Enter Serial Number" @select="selectSl"> -->
+                                        <div class="text-right">
+                                            <label for="serial" class="mr-7">Serial Number</label>
+                                            <input required type="text" id="serial" placeholder="Enter Serial Number"
+                                                class="px-2 border-2 w-[250px] mb-3" v-model="product.serialNumber" />
+                                        </div>
+                                        <!-- </InputField> -->
+                                        <!-- <InputField title="Purchase Price" placeholder="Enter Price" @select="selectPrice"> -->
+                                        <div class="text-right">
+                                            <label for="price" class="mr-7">Purchase Price</label>
+                                            <input required type="text" id="price" placeholder="Enter price"
+                                                class="px-2 border-2 w-[250px] mb-3" v-model="product.purchasePrice" />
+                                        </div>
+                                        <!-- </InputField> -->
+                                        <!-- <InputField title="Purchase Date" inputType="date" @select="selectPurchaseDate"> -->
+                                        <div class="text-right">
+                                            <label for="purchase-date" class="mr-7">Purchase Date</label>
+                                            <input required type="date" id="purchase-date"
+                                                class="px-2 border-2 w-[250px] mb-3" v-model="product.purchaseDate" />
+                                        </div>
+                                        <!-- </InputField> -->
+
+                                        <div class="text-center">
+                                            <input class="mr-2" type="checkbox" id="jack" value="Jack"
+                                                v-model="checkedNames">
+                                            <label for="jack">Has Warranty</label>
+                                        </div>
+
+                                        <div v-if="checkedNames" class="mt-2">
+                                            <ListBox label="Warranty" :options="state.options" @select="selectWarranty">
+                                            </ListBox>
+                                            <!-- <InputField title="Warranty Expire Date" inputType="date"
+                                            @select="selectExpireDate"></InputField> -->
+                                            <div class="text-right">
+                                                <label for="expire-date" class="mr-7">Warranty Expire Date</label>
+                                                <input required type="date" id="expire-date"
+                                                    class="px-2 border-2 w-[250px] mb-3"
+                                                    v-model="product.warrantyExpireDate" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-4 text-right flex justify-end gap-1">
+                                        <div class="mr-2 py-[5px] px-4 border-2 border-red-500 rounded-sm text-red-500 font-medium cursor-pointer hover:text-red-400 hover:border-red-300"
+                                            @click="closeModal">Cancel</div>
+                                        <button type="submit"
+                                            class="inline-flex justify-center rounded-sm border border-transparent bg-blue-500 px-6 py-2 text-sm font-medium text-white hover:bg-blue-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
+                                            Save
+                                        </button>
+                                    </div>
+                                </form>
                             </DialogPanel>
                         </TransitionChild>
                     </div>
@@ -89,11 +118,21 @@ onUpdated(() => {
         product.purchaseDate = props.rowData.purchaseDate;
         product.warrantyInYears = props.rowData.warrantyInYears;
         product.warrantyExpireDate = props.rowData.warrantyExpireDate;
-        console.log(props.rowData.serialNumber, 'pppp');
+        productId.value = props.rowData.id;
+    } else {
+        product.categoryName = '';
+        product.productName = '';
+        product.serialNumber = '';
+        product.purchasePrice = '';
+        product.purchaseDate = '';
+        product.warrantyInYears = '';
+        product.warrantyExpireDate = '';
+        productId.value = -1;
     }
 });
 
 const checkedNames = ref(false);
+const productId = ref(-1);
 const state = reactive({
     options: [
         1,
@@ -171,6 +210,42 @@ const postData = async () => {
     }
 };
 
+const updateData = async (id) => {
+    console.log(id, 'id');
+    console.log(product, 'product');
+    console.log(productId.value, 'id 2');
+    try {
+        const apiKey = 'IRyKCBuGQ1PpflCBs7ZaU+KImwTULz1fU8zjWE/aKhU=';
+        const url = `http://182.163.101.173:49029/product-crud/products/${id}`;
+        const response = await axios.put(url, { ...product, id }, {
+            headers: {
+                'apiKey': apiKey,
+                'Content-Type': 'application/json',
+                'Accept': '*/*'
+            }
+        });
+        emit('reFetchData');
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        })
+
+        Toast.fire({
+            icon: 'success',
+            title: 'Product Updated'
+        })
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 const products = computed(() => {
     let productArr = [];
     categoryResponse.forEach(element => {
@@ -218,8 +293,12 @@ const selectExpireDate = (date) => {
     product.warrantyExpireDate = date;
 };
 
-const addData = () => {
+const addData = (id) => {
     closeModal();
-    postData();
+    if (id === -1) {
+        postData();
+    } else {
+        updateData(id);
+    }
 };
 </script>

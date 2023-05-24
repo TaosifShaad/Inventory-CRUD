@@ -33,8 +33,8 @@
                                     <td class="whitespace-nowrap px-6 py-4">{{ product.purchaseDate }}</td>
                                     <td class="whitespace-nowrap px-6 py-4">
                                         <div class="flex gap-2">
-                                            <PencilSquareIcon class="h-6 w-6 text-blue-500" @click="getRowData(product)" />
-                                            <TrashIcon class="h-6 w-6 text-red-500" @click="deleteData(product.id)" />
+                                            <PencilSquareIcon class="h-6 w-6 text-blue-500 cursor-pointer hover:text-blue-700" @click="getRowData(product)" />
+                                            <TrashIcon class="h-6 w-6 text-red-500 cursor-pointer hover:text-red-700" @click="deleteData(product.id)" />
                                         </div>
                                     </td>
                                 </tr>
@@ -58,6 +58,8 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['editData']);
+
+console.log(props.reFetchData);
 
 onUpdated(() => {
     if (props.reFetchData) {

@@ -1,6 +1,6 @@
 <template>
   <Navbar />
-  <button class="bg-[#045692] text-white p-3 ml-9 mt-5" @click="openModal">Add Inventory</button>
+  <button class="bg-[#045692] text-white p-3 ml-9 mt-5" @click="openModal();modalMode = 'add'">Add Inventory</button>
   <Table :reFetchData="fetchData" @editData="sendToModal"></Table>
   <Modal :rowData="rowData" :mode="modalMode" :isOpen="isOpen" @closeModal="closeModal" @openModal="openModal"
     @reFetchData="reFetchData"></Modal>
