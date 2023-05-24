@@ -22,14 +22,14 @@
                             <tbody>
                                 <tr v-for="(product, index) in products" :key="product.id"
                                     class="transition duration-300 ease-in-out hover:bg-neutral-100 dark:border-neutral-500 dark:hover:bg-neutral-600 bg-[#FAFAFA]">
-                                    <td class="whitespace-nowrap px-6 py-4 font-medium">{{+ + index }}</td>
+                                    <td class="whitespace-nowrap px-6 py-4 font-medium">{{++index }}</td>
                                     <td class="whitespace-nowrap px-6 py-4">{{ product.assetNumber }}</td>
                                     <td class="whitespace-nowrap px-6 py-4">{{ product.categoryName }}</td>
                                     <td class="whitespace-nowrap px-6 py-4">N/A</td>
                                     <td class="whitespace-nowrap px-6 py-4">{{ product.productName }}</td>
                                     <td class="whitespace-nowrap px-6 py-4">{{ product.serialNumber }}</td>
                                     <td class="whitespace-nowrap px-6 py-4">{{ product.purchasePrice }}</td>
-                                    <td class="whitespace-nowrap px-6 py-4">{{ product.warrantyInYears }}</td>
+                                    <td class="whitespace-nowrap px-6 py-4">{{ product.warrantyInYears ? product.warrantyInYears : 'N/A' }}</td>
                                     <td class="whitespace-nowrap px-6 py-4">{{ product.purchaseDate }}</td>
                                     <td class="whitespace-nowrap px-6 py-4">
                                         <div class="flex gap-2">

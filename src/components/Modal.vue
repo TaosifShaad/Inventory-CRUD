@@ -23,9 +23,22 @@
                                 </DialogTitle>
                                 <form @submit.prevent="addData(productId)">
                                     <div class="mt-2">
-                                        <ListBox label="Category" :options="categories" @select="selectCategory"></ListBox>
-                                        <ListBox label="Product Name" :options="products" @select="selectProductName">
-                                        </ListBox>
+                                        <!-- <ListBox label="Category" :options="categories" @select="selectCategory"> -->
+                                        <div class="text-right">
+                                            <label for="category" class="mr-7">Category</label>
+                                            <select id="category" v-model="product.categoryName" class="border-2 w-[250px] mb-3">
+                                                <option v-for="option in categories" :key="option">{{ option }}</option>
+                                            </select>
+                                        </div>
+                                        <!-- </ListBox> -->
+                                        <!-- <ListBox label="Product Name" :options="products" @select="selectProductName"> -->
+                                        <div class="text-right">
+                                            <label for="product-name" class="mr-7">Product Name</label>
+                                            <select id="product-name" v-model="product.productName" class="border-2 w-[250px] mb-3">
+                                                <option v-for="option in products" :key="option">{{ option }}</option>
+                                            </select>
+                                        </div>
+                                        <!-- </ListBox> -->
                                         <!-- <InputField title="Serial Number" placeholder="Enter Serial Number" @select="selectSl"> -->
                                         <div class="text-right">
                                             <label for="serial" class="mr-7">Serial Number</label>
@@ -49,14 +62,20 @@
                                         <!-- </InputField> -->
 
                                         <div class="text-center">
-                                            <input class="mr-2" type="checkbox" id="jack" value="Jack"
-                                                v-model="checkedNames">
-                                            <label for="jack">Has Warranty</label>
+                                            <input class="mr-2" type="checkbox" id="warranty-check"
+                                                v-model="checkedWarranty" @change="clearWarranty">
+                                            <label for="warranty-check">Has Warranty</label>
                                         </div>
 
-                                        <div v-if="checkedNames" class="mt-2">
-                                            <ListBox label="Warranty" :options="state.options" @select="selectWarranty">
-                                            </ListBox>
+                                        <div v-if="checkedWarranty" class="mt-2">
+                                            <!-- <ListBox label="Warranty" :options="state.options" @select="selectWarranty"> -->
+                                                <div class="text-right">
+                                            <label for="warranty" class="mr-7">Warranty</label>
+                                            <select id="warranty" v-model="product.warrantyInYears" class="border-2 w-[250px] mb-3">
+                                                <option v-for="option in state.options" :key="option">{{ option }}</option>
+                                            </select>
+                                        </div>
+                                            <!-- </ListBox> -->
                                             <!-- <InputField title="Warranty Expire Date" inputType="date"
                                             @select="selectExpireDate"></InputField> -->
                                             <div class="text-right">
@@ -87,7 +106,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onUpdated } from 'vue';
+import { ref, reactive, computed, onUpdated, onMounted } from 'vue';
 import InputField from '@/components/InputField.vue';
 import ListBox from '@/components/ListBox.vue';
 import axios from 'axios';
@@ -119,9 +138,14 @@ onUpdated(() => {
         product.warrantyInYears = props.rowData.warrantyInYears;
         product.warrantyExpireDate = props.rowData.warrantyExpireDate;
         productId.value = props.rowData.id;
+        if (product.warrantyInYears) {
+            checkedWarranty.value = true;
+        } else {
+            checkedWarranty.value = false;
+        }
     } else {
-        product.categoryName = '';
-        product.productName = '';
+        product.categoryName = categories[0];
+        product.productName = products.value[0];
         product.serialNumber = '';
         product.purchasePrice = '';
         product.purchaseDate = '';
@@ -131,12 +155,15 @@ onUpdated(() => {
     }
 });
 
-const checkedNames = ref(false);
+const checkedWarranty = ref(false);
 const productId = ref(-1);
 const state = reactive({
     options: [
         1,
-        2
+        2,
+        3,
+        4,
+        5
     ]
 });
 const categories = [];
@@ -144,7 +171,7 @@ const productName = [];
 let categoryResponse;
 
 const product = reactive({
-    categoryName: '',
+    categoryName: categories[0],
     productName: '',
     serialNumber: '',
     purchasePrice: '',
@@ -172,7 +199,9 @@ const getCategory = async () => {
     }
 };
 
-getCategory();
+onMounted(() => {
+    getCategory();
+})
 
 const postData = async () => {
     const jsonBlob = new Blob([JSON.stringify(product)], { type: 'application/json' });
@@ -257,6 +286,13 @@ const products = computed(() => {
     })
     return productArr;
 })
+
+const clearWarranty = () => {
+    if (!checkedWarranty.value) {
+        product.warrantyInYears = '';
+        product.warrantyExpireDate = '';
+    }
+}
 
 function closeModal() {
     emit('closeModal');

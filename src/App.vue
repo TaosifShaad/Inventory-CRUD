@@ -1,6 +1,9 @@
 <template>
   <Navbar />
-  <button class="bg-[#045692] text-white p-3 ml-9 mt-5" @click="openModal();modalMode = 'add'">Add Inventory</button>
+  <div class="flex items-center">
+    <button class="bg-[#045692] text-white p-3 ml-9 mt-5" @click="openModal();modalMode = 'add'">Add Inventory</button>
+    <searchBar class="ml-auto mr-8" />
+  </div>
   <Table :reFetchData="fetchData" @editData="sendToModal"></Table>
   <Modal :rowData="rowData" :mode="modalMode" :isOpen="isOpen" @closeModal="closeModal" @openModal="openModal"
     @reFetchData="reFetchData"></Modal>
@@ -9,6 +12,7 @@
 <script setup>
 import { reactive, ref } from 'vue';
 import { provide } from 'vue';
+import SearchBar from '@/components/SearchBar.vue';
 import Table from '@/components/Table.vue';
 import Modal from '@/components/Modal.vue';
 import Navbar from '@/components/Navbar.vue';
